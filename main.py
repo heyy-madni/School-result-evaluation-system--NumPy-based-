@@ -1,12 +1,17 @@
+import os
 import numpy
 from pathlib import Path
 
+def clear_console():
+    """Clears the console screen."""
+    
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 STUDENT_AXIS = 1
 SUBJECT_AXIS = 0
 
 
-# Load data
+#! Load data
 base_path = Path(__file__).parent
 file_path = base_path / "student_data.csv"
 
@@ -16,14 +21,13 @@ raw_data = numpy.genfromtxt(
     skip_header=1,
 )
 
-if raw_data.size == 0:
-    raise ValueError("CSV file is empty.")
+
 
 roll_numbers = raw_data[:, 0]
 marks = raw_data[:, 1:]
 
 
-# Validation
+#! Validation
 def validate_data(roll_numbers, marks, min_mark=0, max_mark=100):
 
     if marks.size == 0:
@@ -47,7 +51,7 @@ def validate_data(roll_numbers, marks, min_mark=0, max_mark=100):
 marks = validate_data(roll_numbers, marks)
 
 
-# Analytics
+#! Analytics
 def analyze_data(data, axis=None):
     return {
         "mean": numpy.mean(data, axis=axis),
@@ -62,7 +66,7 @@ row_stats = analyze_data(marks, axis=STUDENT_AXIS)
 col_stats = analyze_data(marks, axis=SUBJECT_AXIS)
 
 
-# Evaluation
+#! Evaluation
 def find_topper(roll_numbers, marks):
     averages = numpy.mean(marks, axis=STUDENT_AXIS)
     index = numpy.argmax(averages)
@@ -78,38 +82,41 @@ passed_count = int(numpy.sum(~pass_fail_mask(marks)))
 topper_roll, topper_avg = find_topper(roll_numbers, marks)
 
 
-# Report
-print("\n" + "=" * 50)
-print("STUDENT PERFORMANCE")
-print("=" * 50)
+#! Report
+def print_report():
+    clear_console()
+    print("\n" + "=" * 50)
+    print("STUDENT PERFORMANCE")
+    print("=" * 50)
 
-for i, roll in enumerate(roll_numbers):
-    print(
-        f"Roll {int(roll)} | "
-        f"Mean: {row_stats['mean'][i]:.2f} | "
-        f"Min: {row_stats['min'][i]:.0f} | "
-        f"Max: {row_stats['max'][i]:.0f}"
-    )
+    for i, roll in enumerate(roll_numbers):
+        print(
+            f"Roll {int(roll)} | "
+            f"Mean: {row_stats['mean'][i]:.2f} | "
+            f"Min: {row_stats['min'][i]:.0f} | "
+            f"Max: {row_stats['max'][i]:.0f}"
+        )
 
-print("\n" + "=" * 50)
-print("SUBJECT PERFORMANCE")
-print("=" * 50)
+    print("\n" + "=" * 50)
+    print("SUBJECT PERFORMANCE")
+    print("=" * 50)
 
-for i in range(len(col_stats["mean"])):
-    print(
-        f"Subject {i+1} | "
-        f"Mean: {col_stats['mean'][i]:.2f} | "
-        f"Std: {col_stats['std'][i]:.2f}"
-    )
+    for i in range(len(col_stats["mean"])):
+        print(
+            f"Subject {i+1} | "
+            f"Mean: {col_stats['mean'][i]:.2f} | "
+            f"Std: {col_stats['std'][i]:.2f}"
+        )
 
-print("\n" + "=" * 50)
-print("SUMMARY")
-print("=" * 50)
+    print("\n" + "=" * 50)
+    print("SUMMARY")
+    print("=" * 50)
 
-print("Passed:", passed_count)
-print("Failed:", failed_count)
-print(f"Topper: Roll {int(topper_roll)} (Avg: {topper_avg:.2f})")
+    print("Passed:", passed_count)
+    print("Failed:", failed_count)
+    print(f"Topper: Roll {int(topper_roll)} (Avg: {topper_avg:.2f})")
+    
 
 
-
+print_report()
 
