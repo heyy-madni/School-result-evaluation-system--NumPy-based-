@@ -115,8 +115,69 @@ def print_report():
     print("Passed:", passed_count)
     print("Failed:", failed_count)
     print(f"Topper: Roll {int(topper_roll)} (Avg: {topper_avg:.2f})")
-    
 
 
-print_report()
+def text_report():
+    report_path = base_path / "report.txt"
+    with open(report_path, "w") as f:
+        f.write("STUDENT PERFORMANCE\n")
+        f.write("=" * 50 + "\n")
 
+        for i, roll in enumerate(roll_numbers):
+            f.write(
+                f"Roll {int(roll)} | "
+                f"Mean: {row_stats['mean'][i]:.2f} | "
+                f"Min: {row_stats['min'][i]:.0f} | "
+                f"Max: {row_stats['max'][i]:.0f}\n"
+            )
+
+        f.write("\n" + "=" * 50 + "\n")
+        f.write("SUBJECT PERFORMANCE\n")
+        f.write("=" * 50 + "\n")
+
+        for i in range(len(col_stats["mean"])):
+            f.write(
+                f"Subject {i+1} | "
+                f"Mean: {col_stats['mean'][i]:.2f} | "
+                f"Std: {col_stats['std'][i]:.2f}\n"
+            )
+
+        f.write("\n" + "=" * 50 + "\n")
+        f.write("SUMMARY\n")
+        f.write("=" * 50 + "\n")
+
+        f.write("Passed: " + str(passed_count) + "\n")
+        f.write("Failed: " + str(failed_count) + "\n")
+        f.write(f"Topper: Roll {int(topper_roll)} (Avg: {topper_avg:.2f})\n")
+
+
+#! Menu
+def report_menu():
+    while True:
+        try:
+            clear_console()
+
+            print("\n" + "=" * 50)
+            print("REPORT MENU")
+            print("=" * 50)
+            print("1. View Report in terminal")
+            print("2. Report in text file")
+            print("3. Exit")
+
+            choice = input("Enter your choice: ")
+
+            if choice == "1":   
+                print_report()
+            elif choice == "2":
+                text_report()
+            elif choice == "3":
+                    exit()
+            else:
+             print("Invalid choice. Please try again.")
+        except Exception as e:
+            print("Error:", e)
+            break
+
+
+if __name__ == "__main__":
+    report_menu()
